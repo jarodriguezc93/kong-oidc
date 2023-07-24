@@ -17,14 +17,27 @@ return {
         fields = {
           {
             client_id = {
-              type = "string",
-              required = true
+              type = "array",
+              required = true,
+              elements = {
+                type = "string"
+              }
             }
           },
           {
             client_secret = {
+              type = "array",
+              required = true,
+              elements = {
+                type = "string"
+              }
+            }
+          },
+          {
+            client_arg = {
               type = "string",
-              required = true
+              required = true,
+              default = "X-Client-ID"
             }
           },
           {
@@ -292,6 +305,13 @@ return {
                 type = "string"
               },
               default = {}
+            }
+          },
+          {
+            bypass_preflight_request = {
+              type = "boolean",
+              required = true,
+              default = false
             }
           }
         }

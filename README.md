@@ -1,11 +1,7 @@
 # What is Kong OIDC plugin
+**this repo is forked from https://github.com/revomatico/kong-oidc,it supports multiple clients and preflight request bypass.In addtion,behaviour of verifing bearer token has been adjusted,it happened only if bearer token provided**
 
-[![Join the chat at https://gitter.im/nokia/kong-oidc](https://badges.gitter.im/nokia/kong-oidc.svg)](https://gitter.im/nokia/kong-oidc?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
-**Continuous Integration:** [![Build Status](https://travis-ci.org/nokia/kong-oidc.svg?branch=master)](https://travis-ci.org/nokia/kong-oidc)
-[![Coverage Status](https://coveralls.io/repos/github/nokia/kong-oidc/badge.svg?branch=master)](https://coveralls.io/github/nokia/kong-oidc?branch=master) <br/>
-
-**kong-oidc** is a plugin for [Kong](https://github.com/Mashape/kong) implementing the
+**kong-oidc** is a plugin for [Kong](https://github.com/kong/kong) implementing the
 [OpenID Connect](http://openid.net/specs/openid-connect-core-1_0.html) Relying Party (RP) functionality.
 
 It authenticates users against an OpenID Connect Provider using
@@ -75,8 +71,9 @@ If you're using `luarocks` execute the following:
 | Parameter                                   | Default                                    | Required | description                                                                                                                                                                             |
 | ------------------------------------------- | ------------------------------------------ | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `name`                                      |                                            | true     | plugin name, has to be `oidc`                                                                                                                                                           |
-| `config.client_id`                          |                                            | true     | OIDC Client ID                                                                                                                                                                          |
-| `config.client_secret`                      |                                            | true     | OIDC Client secret                                                                                                                                                                      |
+| `config.client_id`                          |                                            | true     | OIDC Client ID(s)                                                                                                                                                                          |
+| `config.client_secret`                      |                                            | true     | OIDC Client secret(s)                                                                                                                                                                     |
+| `config.client_arg`                          | Client_ID                                 | true     | Header key contains Client ID                                                                                                                                                                          |
 | `config.discovery`                          | <https://.well-known/openid-configuration> | false    | OIDC Discovery Endpoint (`/.well-known/openid-configuration`)                                                                                                                           |
 | `config.scope`                              | openid                                     | false    | OAuth2 Token scope. To use OIDC it has to contains the `openid` scope                                                                                                                   |
 | `config.ssl_verify`                         | false                                      | false    | Enable SSL verification to OIDC Provider                                                                                                                                                |
@@ -100,11 +97,12 @@ If you're using `luarocks` execute the following:
 | `config.disable_access_token_header`        | no                                         | false    | Disable passing the Access Token to the upstream server                                                                                                                                 |
 | `config.groups_claim`                       | groups                                     | false    | Name of the claim in the token to get groups from                                                                                                                                       |
 | `config.skip_already_auth_requests`         | no                                         | false    | Ignore requests where credentials have already been set by a higher priority plugin such as basic-auth                                                                                  |
-| `config.bearer_jwt_auth_enable`             | no                                         | false    | Authenticate based on JWT (ID) token provided in Authorization (Bearer) header. Checks iss, sub, aud, exp, iat (as in ID token). `config.discovery` must be defined to discover JWKS    |
+| `config.bearer_jwt_auth_enable`             | no                                         | false    | Authenticate based on JWT (ID) token if it is in Authorization (Bearer) header. Checks iss, sub, aud, exp, iat (as in ID token). `config.discovery` must be defined to discover JWKS    |
 | `config.bearer_jwt_auth_allowed_auds`       |                                            | false    | List of JWT token `aud` values allowed when validating JWT token in Authorization header. If not provided, uses value from `config.client_id`                                           |
 | `config.bearer_jwt_auth_signing_algs`       | [ 'RS256' ]                                | false    | List of allowed signing algorithms for Authorization header JWT token validation. Must match to OIDC provider and `resty-openidc` supported algorithms                                  |
 | `config.header_names`                       |                                            | false    | List of custom upstream HTTP headers to be added based on claims. Must have same number of elements as `config.header_claims`. Example: `[ 'x-oidc-email', 'x-oidc-email-verified' ]`   |
 | `config.header_claims`                      |                                            | false    | List of claims to be used as source for custom upstream headers. Claims are sourced from Userinfo, ID Token, Bearer JWT, Introspection, depending on auth method.  Use only claims containing simple string values. Example: `[ 'email', 'email_verified'` |
+| `config.`bypass_preflight_request                      |                                            | false    | Flag to determine whether this plugin bypass the preflight requests |
 
 ### Enabling kong-oidc
 
@@ -145,11 +143,11 @@ Server: kong/0.11.0
     "created_at": 1508871239797,
     "config": {
         "response_type": "code",
-        "client_id": "kong-oidc",
+        "client_id": ["kong-oidc"],
         "discovery": "https://<oidc_provider>/.well-known/openid-configuration",
         "scope": "openid",
         "ssl_verify": "no",
-        "client_secret": "29d98bf7-168c-4874-b8e9-9ba5e7382fa0",
+        "client_secret": ["29d98bf7-168c-4874-b8e9-9ba5e7382fa0"],
         "token_endpoint_auth_method": "client_secret_post"
     },
     "id": "58cc119b-e5d0-4908-8929-7d6ed73cb7de",
