@@ -36,7 +36,7 @@ return {
           {
             client_arg = {
               type = "string",
-              required = true,
+              required = false,
               default = "X-Client-ID"
             }
           },
