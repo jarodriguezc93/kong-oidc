@@ -26,14 +26,12 @@ function OidcHandler:access(config)
         return
     end
 
-    local client_id = kong.request.get_header(oidcConfig.client_arg)
+    local client_id = oidcConfig.client_id
     if (client_id == nil) then
-        ngx.log(ngx.DEBUG, oidcConfig.client_arg .. " not found in Headers")
-        client_id = oidcConfig.client_id
-        ngx.log(ngx.DEBUG, "Client ID: " .. client_id)
+        ngx.log(ngx.DEBUG, oidcConfig.client_id .. " not found in Headers")
     end
 
-    local client_secret = oidcConfig.client_map[client_id]
+    local client_secret = oidcConfig.client_secret
     if (client_secret == nil) then
         return kong.response.exit(401, {
             message = "This client is not allowed: " .. client_id

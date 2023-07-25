@@ -17,7 +17,7 @@ return {
         fields = {
           {
             client_id = {
-              type = "array",
+              type = "string",
               required = true,
               elements = {
                 type = "string"
@@ -26,7 +26,7 @@ return {
           },
           {
             client_secret = {
-              type = "array",
+              type = "string",
               required = true,
               elements = {
                 type = "string"

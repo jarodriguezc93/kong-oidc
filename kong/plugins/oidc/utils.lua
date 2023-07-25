@@ -45,17 +45,9 @@ function M.get_redirect_uri(ngx)
 end
 
 function M.get_options(config, ngx)
-    local map = {}
-    local client_id = config.client_id
-    local client_secret = config.client_secret
-    for i, id in ipairs(client_id) do
-        local secret = client_secret[i]
-        if (not (secret == nil)) then
-            map[id] = secret
-        end
-    end
     return {
-        client_map = map,
+        client_id = config.client_id,
+        client_secret = config.client_secret,
         client_arg = config.client_arg,
         discovery = config.discovery,
         introspection_endpoint = config.introspection_endpoint,
